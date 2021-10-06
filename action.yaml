@@ -1,0 +1,39 @@
+name: 'Login aws'
+description: 'Log into aws for a kubernetes deployment using helmfile'
+inputs:
+  access-key:  
+    required: true
+  secret-key:  
+    required: true
+  cluster-name:  
+    required: true
+  aws-region:
+    required: true
+outputs:
+  helmfile-creds:
+    value: ${{ steps.set-helmfile.outputs.creds }}
+    
+runs:
+  using: "composite"
+  steps:
+
+    - name: AWS Setup / AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ inputs.access-key }}
+        aws-secret-access-key: ${{ inputs.secret-key }}
+        aws-region: ${{ inputs.aws-region }}
+    
+    - name: AWS Setup/ Login to Amazon ECR
+      uses: aws-actions/amazon-ecr-login@v1
+        
+    - name: AWS Setup / update kubeconfig
+      run: |
+            mkdir -p ~/.kube
+            aws eks update-kubeconfig --name ${{ inputs.cluster-name }}
+
+    - id: set-helmfile
+      shell: bash
+      run: |
+        export HELMFILE_CREDS=$(aws ecr get-login-password)
+        echo "::set-output name=creds::$(echo $HELMFILE_CREDS)"
