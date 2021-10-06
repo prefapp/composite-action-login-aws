@@ -28,6 +28,7 @@ runs:
       uses: aws-actions/amazon-ecr-login@v1
         
     - name: AWS Setup / update kubeconfig
+      shell: bash
       run: |
             mkdir -p ~/.kube
             aws eks update-kubeconfig --name ${{ inputs.cluster-name }}
