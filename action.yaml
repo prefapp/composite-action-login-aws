@@ -15,7 +15,7 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: Set provider
+    - name: Hide credentials
       uses: actions/github-script@v4
       env:
         awskeys: ${{ inputs.awskeys }}
