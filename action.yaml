@@ -1,7 +1,7 @@
 name: 'Login aws'
 description: 'Log into aws for a kubernetes deployment using helmfile'
 inputs:
-  aws-keys:  
+  awskeys:  
     required: true
     description: "JSON object with keys aws_access_key_id and aws_secret_access_key"
   cluster-name:  
@@ -16,12 +16,15 @@ runs:
   using: "composite"
   steps:
 
-    - name: Set credentials as environment
-      shell: bash
-      run: |
-        echo "AWS_ACCESS_KEY=${{ fromJSON(inputs.aws-keys).aws_access_key_id }}" >> $GITHUB_ENV
-        echo "AWS_SECRET_KEY=${{ fromJSON(inputs.aws-keys).aws_secret_access_key }}" >> $GITHUB_ENV
-        
+    - name: Set provider
+      id: set-cloud-info
+      uses: actions/github-script@v4
+      with:
+        result-encoding: string
+        script: |
+          const myInput = core.getInput('awskeys', { required: true });
+          core.debug(myInput);
+          //core.setSecret('myPassword');
 
     - name: AWS Setup / AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
