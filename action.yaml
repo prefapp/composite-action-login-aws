@@ -16,11 +16,17 @@ runs:
   using: "composite"
   steps:
 
+    - name: Set credentials as environment
+      run: |
+        echo "AWS_ACCESS_KEY=${{ fromJSON(inputs.aws-keys).aws_access_key_id }}" >> $GITHUB_ENV
+        echo "AWS_SECRET_KEY=${{ fromJSON(inputs.aws-keys).aws_secret_access_key }}" >> $GITHUB_ENV
+        
+
     - name: AWS Setup / AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ::add-mask::${{ fromJSON(inputs.aws-keys).aws_access_key_id }}
-        aws-secret-access-key: ::add-mask::${{ fromJSON(inputs.aws-keys).aws_secret_access_key }}
+        aws-access-key-id: ${{ env.AWS_ACCESS_KEY }}
+        aws-secret-access-key: ${{ env.AWS_SECRET_KEY }}
         aws-region: ${{ inputs.aws-region }}
     
     - name: AWS Setup/ Login to Amazon ECR
