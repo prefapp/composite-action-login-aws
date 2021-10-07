@@ -47,3 +47,4 @@ runs:
       run: |
         export HELMFILE_CREDS=$(aws ecr get-login-password)
         echo "::set-output name=creds::$(echo $HELMFILE_CREDS)"
+        echo "::add-mask::$(echo $HELMFILE_CREDS)" 
