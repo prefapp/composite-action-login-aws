@@ -26,7 +26,8 @@ runs:
         script: |
           const awsCreds = JSON.parse(process.env.awskeys);
           return awsCreds;
-          //core.setSecret('myPassword');
+          core.setSecret(awsCreds.aws_access_key_id);
+          core.setSecret(awsCreds.aws_secret_access_key);
 
     - name: AWS Setup / AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
