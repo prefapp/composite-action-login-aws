@@ -17,6 +17,7 @@ runs:
   steps:
 
     - name: Set credentials as environment
+      shell: bash
       run: |
         echo "AWS_ACCESS_KEY=${{ fromJSON(inputs.aws-keys).aws_access_key_id }}" >> $GITHUB_ENV
         echo "AWS_SECRET_KEY=${{ fromJSON(inputs.aws-keys).aws_secret_access_key }}" >> $GITHUB_ENV
