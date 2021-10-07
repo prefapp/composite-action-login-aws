@@ -19,11 +19,14 @@ runs:
     - name: Set provider
       id: set-cloud-info
       uses: actions/github-script@v4
+      env:
+        awskeys: ${{ inputs.awskeys }}
       with:
         result-encoding: string
         script: |
-          const myInput = core.getInput('awskeys', { required: true });
-          core.debug(myInput);
+          const myInput = JSON.parse(process.env.awskeys);
+          core.debug(myInput.aws_access_key_id);
+          core.debug(myInput.aws_secret_access_key);
           //core.setSecret('myPassword');
 
     - name: AWS Setup / AWS credentials
