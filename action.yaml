@@ -25,7 +25,7 @@ runs:
         result-encoding: string
         script: |
           const myInput = JSON.parse(process.env.awskeys);
-          core.debug(myInput.aws_access_key_id);
+          core.debug(myInput);
           core.debug(myInput.aws_secret_access_key);
           //core.setSecret('myPassword');
 
