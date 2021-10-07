@@ -22,18 +22,17 @@ runs:
       env:
         awskeys: ${{ inputs.awskeys }}
       with:
-        result-encoding: string
+        result-encoding: json
         script: |
-          const myInput = JSON.parse(process.env.awskeys);
-          console.log(myInput);
-          console.log(myInput.aws_secret_access_key);
+          const awsCreds = JSON.parse(process.env.awskeys);
+          return awsCreds;
           //core.setSecret('myPassword');
 
     - name: AWS Setup / AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ${{ env.AWS_ACCESS_KEY }}
-        aws-secret-access-key: ${{ env.AWS_SECRET_KEY }}
+        aws-access-key-id: ${{ fromJSON(steps.set-cloud-info.outputs.result).aws_access_key_id }}
+        aws-secret-access-key: ${{ fromJSON(steps.set-cloud-info.outputs.result).aws_secret_access_key }}
         aws-region: ${{ inputs.aws-region }}
     
     - name: AWS Setup/ Login to Amazon ECR
