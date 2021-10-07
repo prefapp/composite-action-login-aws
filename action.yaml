@@ -17,7 +17,6 @@ runs:
   steps:
 
     - name: Set provider
-      id: set-cloud-info
       uses: actions/github-script@v4
       env:
         awskeys: ${{ inputs.awskeys }}
@@ -25,15 +24,14 @@ runs:
         result-encoding: json
         script: |
           const awsCreds = JSON.parse(process.env.awskeys);
-          return awsCreds;
           core.setSecret(awsCreds.aws_access_key_id);
           core.setSecret(awsCreds.aws_secret_access_key);
 
     - name: AWS Setup / AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ${{ fromJSON(steps.set-cloud-info.outputs.result).aws_access_key_id }}
-        aws-secret-access-key: ${{ fromJSON(steps.set-cloud-info.outputs.result).aws_secret_access_key }}
+        aws-access-key-id: ${{ fromJSON(inputs.awskeys).aws_access_key_id }}
+        aws-secret-access-key: ${{ fromJSON(inputs.awskeys).aws_secret_access_key }}
         aws-region: ${{ inputs.aws-region }}
     
     - name: AWS Setup/ Login to Amazon ECR
