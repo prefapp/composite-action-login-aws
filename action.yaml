@@ -15,7 +15,6 @@ outputs:
 runs:
   using: "composite"
   steps:
-
     - name: Set provider
       uses: actions/github-script@v4
       env:
