@@ -1,10 +1,9 @@
 name: 'Login aws'
 description: 'Log into aws for a kubernetes deployment using helmfile'
 inputs:
-  access-key:  
+  aws-keys:  
     required: true
-  secret-key:  
-    required: true
+    description: "JSON object with keys aws_access_key_id and aws_secret_access_key"
   cluster-name:  
     required: true
   aws-region:
@@ -20,8 +19,8 @@ runs:
     - name: AWS Setup / AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ${{ inputs.access-key }}
-        aws-secret-access-key: ${{ inputs.secret-key }}
+        aws-access-key-id: ${{ fromJSON(inputs.aws-keys).aws_access_key_id }}
+        aws-secret-access-key: ${{ fromJSON(inputs.aws-keys).aws_secret_access_key }}
         aws-region: ${{ inputs.aws-region }}
     
     - name: AWS Setup/ Login to Amazon ECR
