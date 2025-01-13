@@ -6,30 +6,25 @@ inputs:
     description: "JSON object with keys aws_access_key_id and aws_secret_access_key"
   cluster-name:  
     required: true
+    description: "Name of the EKS cluster"
   aws-region:
     required: true
+    description: "AWS region"
 outputs:
   helmfile-creds:
     value: ${{ steps.set-helmfile.outputs.creds }}
+    description: "Helmfile credentials"
     
 runs:
   using: "composite"
   steps:
-    - name: Hide credentials
-      uses: actions/github-script@v4
-      env:
-        awskeys: ${{ inputs.awskeys }}
-      with:
-        result-encoding: json
-        script: |
-          const awsCreds = JSON.parse(process.env.awskeys);
-          core.setSecret(awsCreds.aws_access_key_id);
-          core.setSecret(awsCreds.aws_secret_access_key);
 
-    - name: AWS Setup / AWS credentials
+    - name: AWS Setup / AWS credentials with Access Key ID and Secret Access Key
+      id: aws-credentials-access-keys
+      if: ${{ inputs.auth_type == 'aws_access_keys'}}
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ${{ fromJSON(inputs.awskeys).aws_access_key_id }}
+        aws-access-key-id: 
         aws-secret-access-key: ${{ fromJSON(inputs.awskeys).aws_secret_access_key }}
         aws-region: ${{ inputs.aws-region }}
     
